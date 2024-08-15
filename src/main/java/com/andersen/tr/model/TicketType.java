@@ -1,8 +1,9 @@
-package com.andersen.tr.bean;
+package com.andersen.tr.model;
 
 import java.io.Serializable;
 
 public enum TicketType implements Serializable {
+
     DAY,
     WEEK,
     MONTH,
