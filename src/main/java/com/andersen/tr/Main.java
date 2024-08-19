@@ -1,6 +1,6 @@
 package com.andersen.tr;
 
-import com.andersen.tr.bean.User;
+import com.andersen.tr.model.User;
 import com.andersen.tr.service.impl.TicketService;
 import com.andersen.tr.service.impl.UserService;
 
@@ -17,10 +17,11 @@ public class Main {
 
         main.saveTickets(user.getId(), user.getName());
         main.printUserTicketsInfo(user.getId());
-        main.updateTicketType(user.getId());
+        main.updateTicketType();
         main.printTicketInfo();
         main.translateName(user.getId(), user.getName());
         main.deleteAllUserTickets(user.getId());
+        main.updateUserName(user.getId());
     }
 
     private void saveUser(){
@@ -33,8 +34,8 @@ public class Main {
         }
     }
 
-    private void updateTicketType(int userId){
-        ticketService.updateTicketType(userId);
+    private void updateTicketType(){
+        ticketService.updateTicketType();
     }
 
     private void printTicketInfo(){
@@ -51,5 +52,9 @@ public class Main {
 
     private void translateName(int userId, String userName){
         userService.translate(userId, userName);
+    }
+
+    private void updateUserName(int userId){
+        userService.updateUserAndTickets(userId);
     }
 }

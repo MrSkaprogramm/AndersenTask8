@@ -1,16 +1,15 @@
 package com.andersen.tr.dao;
 
-import com.andersen.tr.bean.Ticket;
-import com.andersen.tr.bean.TicketType;
+import com.andersen.tr.model.Ticket;
+import com.andersen.tr.model.TicketType;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TicketDaoInterface {
 
     public void saveTicket(Ticket ticket) throws DaoException;
 
-    public void updateTicketType(int ticketId, int userId, TicketType ticketType) throws DaoException;
+    public void updateTicketType(Ticket ticket) throws DaoException;
 
     public Ticket fetchTicketById(int id) throws DaoException;
 

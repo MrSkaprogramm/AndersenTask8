@@ -1,15 +1,35 @@
-package com.andersen.tr.bean;
+package com.andersen.tr.model;
+
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "\"Ticket\"", schema = "public")
 public class Ticket {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "user_id", nullable = false)
     private int userId;
+    @Column(name = "ticket_type", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private TicketType ticketType;
+    @Column(name = "creation_date", nullable = false)
     private LocalDate creationDate;
+    @Column(name = "user_name", nullable = false)
     private String userName;
 
     public Ticket() {}
+
+    public Ticket(int userId, TicketType ticketType, LocalDate creationDate, String userName) {
+        this.userId = userId;
+        this.ticketType = ticketType;
+        this.creationDate = creationDate;
+        this.userName = userName;
+    }
 
     public int getId() {
         return id;

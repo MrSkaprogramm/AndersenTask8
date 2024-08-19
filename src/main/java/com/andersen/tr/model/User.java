@@ -1,11 +1,27 @@
-package com.andersen.tr.bean;
+package com.andersen.tr.model;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "\"User\"", schema = "public")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDateTime;
+
+    public User() {
+    }
+
+    public User(String name, LocalDateTime creationDateTime) {
+        this.name = name;
+        this.creationDateTime = creationDateTime;
+    }
 
     public User(int id, String name, LocalDateTime creationDateTime) {
         this.id = id;

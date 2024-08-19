@@ -1,6 +1,6 @@
 package com.andersen.tr.service;
 
-import com.andersen.tr.bean.Ticket;
+import com.andersen.tr.model.Ticket;
 import com.andersen.tr.dao.DaoException;
 
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ public interface TicketServiceInterface {
 
     public Ticket createTicket(int userId, String userName);
 
-    public void updateTicketType(int userId);
+    public void updateTicketType();
 
     public void printTicketInfo() throws DaoException;
 

@@ -1,8 +1,10 @@
 package com.andersen.tr.dao;
 
-import com.andersen.tr.bean.User;
+import com.andersen.tr.model.Ticket;
+import com.andersen.tr.model.User;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface UserDaoInterface {
 
@@ -16,4 +18,5 @@ public interface UserDaoInterface {
 
     public void translateName(String name, int userId) throws DaoException;
 
+    public void updateUserAndTickets(User user, List<Ticket> tickets) throws DaoException;
 }

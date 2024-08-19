@@ -1,9 +1,9 @@
 package com.andersen.tr.service.impl;
 
-import com.andersen.tr.bean.TicketType;
+import com.andersen.tr.model.TicketType;
 import com.andersen.tr.dao.DaoException;
 import com.andersen.tr.dao.impl.TicketDao;
-import com.andersen.tr.bean.Ticket;
+import com.andersen.tr.model.Ticket;
 import com.andersen.tr.dao.impl.UserDao;
 import com.andersen.tr.service.TicketServiceInterface;
 
@@ -41,7 +41,7 @@ public class TicketService implements TicketServiceInterface {
     }
 
     @Override
-    public void updateTicketType(int userId) {
+    public void updateTicketType() {
         System.out.println("Enter id of ticket:");
         int ticketId = scanner.nextInt();
         scanner.nextLine();
@@ -51,10 +51,13 @@ public class TicketService implements TicketServiceInterface {
         TicketType ticketType = TicketType.valueOf(type.toUpperCase());
 
         try {
-            if (!(ticketDao.checkTicketExist(ticketId) || userDao.checkUserExist(userId))) {
+            Ticket ticket = ticketDao.fetchTicketById(ticketId);
+            ticket.setTicketType(ticketType);
+
+            if (!(ticketDao.checkTicketExist(ticketId))) {
                 throw new IllegalArgumentException("Wrong id!");
             } else {
-                ticketDao.updateTicketType(ticketId, userId, ticketType);
+                ticketDao.updateTicketType(ticket);
             }
         } catch (DaoException e) {
             System.err.println(e.getMessage());
@@ -78,7 +81,7 @@ public class TicketService implements TicketServiceInterface {
         } catch (DaoException e) {
             System.err.println(e.getMessage());
         }
-        System.out.println("Ticket with " + "userId " + ticket.getId() + "\n" + "- userId: "
+        System.out.println("Ticket with " + "ticket id " + ticket.getId() + "\n" + "- userId: "
                 + ticket.getUserId() + "\n" + "- ticketType: " + ticket.getTicketType() + "\n" + "- creationDate: "
                 + ticket.getCreationDate() + "\n" + "- userName: "
                 + ticket.getUserName());
