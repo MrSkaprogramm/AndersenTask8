@@ -1,7 +1,6 @@
 package com.andersen.tr.dao;
 
 import com.andersen.tr.model.Ticket;
-import com.andersen.tr.model.TicketType;
 
 import java.util.List;
 
@@ -15,5 +14,6 @@ public interface TicketDaoInterface {
 
     public List<Ticket> fetchTicketsByUserId(int userId) throws DaoException;
 
+    public boolean checkTicketExist(int ticketId) throws DaoException;
 
 }
