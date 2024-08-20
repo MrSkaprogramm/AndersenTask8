@@ -8,9 +8,7 @@ import com.andersen.tr.dao.impl.UserDao;
 import com.andersen.tr.service.TicketServiceInterface;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
