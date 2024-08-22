@@ -6,15 +6,25 @@ import com.andersen.tr.model.User;
 import com.andersen.tr.dao.DaoException;
 import com.andersen.tr.dao.impl.UserDao;
 import com.andersen.tr.service.UserServiceInterface;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+@Service
 public class UserService implements UserServiceInterface {
-    private final UserDao userDao = new UserDao();
-    private final TicketDao ticketDao = new TicketDao();
     static Scanner scanner = new Scanner(System.in);
+
+    private final UserDao userDao;
+    private final TicketDao ticketDao;
+
+    @Autowired
+    public UserService(UserDao userDao, TicketDao ticketDao) {
+        this.userDao = userDao;
+        this.ticketDao = ticketDao;
+    }
 
     @Override
     public void saveUser() {
@@ -59,7 +69,10 @@ public class UserService implements UserServiceInterface {
                 userDao.deleteUserAndTicketsById(userId);
             }
         } catch (DaoException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e);
+            e.printStackTrace();
+            e.getCause();
+            e.getMessage();
         }
     }
 

@@ -1,27 +1,43 @@
 package com.andersen.tr;
 
+import com.andersen.tr.config.SpringConfig;
 import com.andersen.tr.model.User;
 import com.andersen.tr.service.impl.TicketService;
 import com.andersen.tr.service.impl.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Main {
-    private static final TicketService ticketService = new TicketService();
-    private static final UserService userService = new UserService();
+    private final TicketService ticketService;
+    private final UserService userService;
+
+    @Autowired
+    public Main(TicketService ticketService, UserService userService) {
+        this.ticketService = ticketService;
+        this.userService = userService;
+    }
 
     public static void main(String[] args) {
-        Main main = new Main();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
 
+        Main main = context.getBean(Main.class);
+        main.run();
+    }
+
+    private void run(){
         System.out.println("Hello! You in Postgre SQL Demo App");
-        main.saveUser();
+        saveUser();
         User user = userService.getUser();
 
-        main.saveTickets(user.getId(), user.getName());
-        main.printUserTicketsInfo(user.getId());
-        main.updateTicketType();
-        main.printTicketInfo();
-        main.translateName(user.getId(), user.getName());
-        main.deleteAllUserTickets(user.getId());
-        main.updateUserName(user.getId());
+        saveTickets(user.getId(), user.getName());
+        printUserTicketsInfo(user.getId());
+        updateTicketType();
+        printTicketInfo();
+        translateName(user.getId(), user.getName());
+        deleteAllUserTickets(user.getId());
+        updateUserName(user.getId());
     }
 
     private void saveUser(){

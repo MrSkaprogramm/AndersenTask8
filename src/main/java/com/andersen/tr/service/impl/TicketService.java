@@ -6,15 +6,26 @@ import com.andersen.tr.dao.impl.TicketDao;
 import com.andersen.tr.model.Ticket;
 import com.andersen.tr.dao.impl.UserDao;
 import com.andersen.tr.service.TicketServiceInterface;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+@Service
 public class TicketService implements TicketServiceInterface {
-    private final TicketDao ticketDao = new TicketDao();
-    private final UserDao userDao = new UserDao();
     static Scanner scanner = new Scanner(System.in);
+
+    private final UserDao userDao;
+    private final TicketDao ticketDao;
+
+    @Autowired
+    public TicketService(UserDao userDao, TicketDao ticketDao) {
+        this.userDao = userDao;
+        this.ticketDao = ticketDao;
+    }
 
     public Ticket createTicket(int userId, String userName) {
         System.out.println("Enter ticket type:");

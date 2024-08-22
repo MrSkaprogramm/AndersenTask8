@@ -1,20 +1,18 @@
 package com.andersen.tr.dao.impl;
-import com.andersen.tr.dao.connection.SessionFactoryProvider;
 import com.andersen.tr.model.Ticket;
 import com.andersen.tr.model.User;
 import com.andersen.tr.dao.DaoException;
 import com.andersen.tr.dao.UserDaoInterface;
 import jakarta.persistence.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.jdbc.Work;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public class UserDao implements UserDaoInterface {
     private static final String DELETE_TICKETS_BY_USER_ID_QUERY = "DELETE FROM Ticket WHERE userId = :userId";
     private static final String DELETE_USER_BY_ID_QUERY = "DELETE FROM User WHERE id = :userId";
@@ -25,21 +23,24 @@ public class UserDao implements UserDaoInterface {
             "SET user_name = TRANSLATE(?, 'abcdefghijklmnopqrstuvwxyz', 'абвгдеёжзиклмнопрстуфхцчшщъыьэюя') " +
             "WHERE user_id = ?;";
 
+    private final SessionFactory sessionFactory;
+
+    public UserDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
 
     @Override
     public void saveUser(String name, LocalDate creationDate) throws DaoException {
         User user = new User(name, creationDate.atStartOfDay());
-        Session session = SessionFactoryProvider.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+        Session session = sessionFactory.openSession();
         session.save(user);
-        transaction.commit();
         session.close();
     }
 
     @Override
     public User fetchUserById(int id) throws DaoException {
-        return SessionFactoryProvider
-                .getSessionFactory()
+        return sessionFactory
                 .openSession()
                 .get(User.class, id);
     }
@@ -47,7 +48,8 @@ public class UserDao implements UserDaoInterface {
     @Override
     public void deleteUserAndTicketsById(int userId) throws DaoException {
         Transaction transaction = null;
-        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
             Query ticketDeleteQuery = session.createQuery(DELETE_TICKETS_BY_USER_ID_QUERY);
@@ -57,6 +59,7 @@ public class UserDao implements UserDaoInterface {
             Query userDeleteQuery = session.createQuery(DELETE_USER_BY_ID_QUERY);
             userDeleteQuery.setParameter("userId", userId);
             userDeleteQuery.executeUpdate();
+
             transaction.commit();
         } catch (Exception e) {
             System.err.println(e.getStackTrace());
@@ -67,7 +70,8 @@ public class UserDao implements UserDaoInterface {
     @Override
     public void translateName(String name, int userId) throws DaoException {
         Transaction transaction = null;
-        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
             Query userNameQuery = session.createNativeQuery(USER_USERNAME_TRANSLATION_QUERY);
@@ -88,7 +92,7 @@ public class UserDao implements UserDaoInterface {
 
     @Override
     public void updateUserAndTickets(User user, List<Ticket> tickets) throws DaoException {
-        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
 
             session.update(user);
@@ -96,8 +100,8 @@ public class UserDao implements UserDaoInterface {
             for (Ticket ticket : tickets) {
                 session.update(ticket);
             }
-            transaction.commit();
 
+            transaction.commit();
         } catch (Exception e) {
             throw new DaoException(e.getMessage());
         }
@@ -105,7 +109,7 @@ public class UserDao implements UserDaoInterface {
 
     @Override
     public boolean checkUserExist(int userId) throws DaoException {
-        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             long count = (long) session.createNativeQuery(CHECK_USER_EXIST_QUERY)
                     .setParameter("userId", userId)
                     .uniqueResult();
